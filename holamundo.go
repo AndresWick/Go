@@ -1,11 +1,16 @@
 package main
 
 import (
-  "fmt"; //inputs, outputs
+	"fmt" //inputs, outputs
 )
 
-func main()  {
-  var nombre string = "carlos";
-//  nombre = "Carlos";
-  fmt.Println("Holaaa goooo "+nombre);
+func main() {
+	var nombre = "carlos"
+	//nombre2 := "Carlos"
+	fmt.Println("Holaaa goooo " + nombre)
+	fmt.Print("Prueb")
+	fmt.Print("Prueb")
+	fmt.Print("Prueb")
+	fmt.Print("Prueb")
+	fmt.Print("Prueb")
 }
