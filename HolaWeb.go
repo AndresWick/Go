@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os/user"
@@ -14,29 +15,46 @@ type Usuario struct {
 	Contraseña string
 }
 
-func mostrarUsuario(w http.ResponseWriter, r *http.Request) {
-
-	usuario1 := Usuario{"user", "000"}
-	//json.NewDecoder(r)
-	json.NewEncoder(w).Encode(usuario1)
+func mostrarUsuarios(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(BloqueIndices)
 }
 
+// BloqueIndices a usuarios
+var BloqueIndices = make(map[string]Usuario)
+
 func main() {
+	BloqueIndices = make(map[string]Usuario)
 	u, err := user.Current()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	usuarioAndres := Usuario{u.Name, u.Username}
+	usuarioPedro := Usuario{"Pedro", "698"}
+	usuarioRamon := Usuario{"Ramon", "456"}
+	usuarioJulia := Usuario{"Julia", "123456"}
+
 	fmt.Println("Usuario actual:")
 	fmt.Println(usuarioAndres.Nombre)
 
-	http.HandleFunc("/usuario", mostrarUsuario)
+	BloqueIndices["001"] = (usuarioAndres)
+	BloqueIndices["002"] = (usuarioPedro)
+	BloqueIndices["003"] = (usuarioRamon)
+	BloqueIndices["004"] = (usuarioJulia)
+
+	http.HandleFunc("/usuarios", mostrarUsuarios)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, arg2 *http.Request) {
-		//usuarioAndres := Usuario{"andrés", "contraseña123"}
-		json.NewEncoder(w).Encode(usuarioAndres)
+		fmt.Fprintf(w, "<h1> PAGINA PRINCIPAL </h1>")
 	})
+
 	http.ListenAndServe(":8002", nil)
 
+	b, err := ioutil.ReadFile("matriz.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%s\n", b)
+	fmt.Printf("%v\n", BloqueIndices["001"])
 }
