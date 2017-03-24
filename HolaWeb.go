@@ -19,6 +19,19 @@ func mostrarUsuarios(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(BloqueIndices)
 }
 
+func agregarUsuarioTxt(user Usuario) {
+	b, err := ioutil.ReadFile("Usuarios.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	b = append(b, []byte("Usuario: {Nombre:"+string(user.Nombre)+",Contraseña:"+string(user.Contraseña)+"}\x0A")...)
+	error := ioutil.WriteFile("Usuarios.json", b, 0644)
+	if error != nil {
+		log.Fatal(error)
+	}
+	fmt.Printf("Se ha añadido un nuevo usuario a Usuarios.json ... \n")
+}
+
 // BloqueIndices a usuarios
 var BloqueIndices = make(map[string]Usuario)
 
@@ -29,6 +42,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	usuarioAndres := Usuario{u.Name, u.Username}
 	usuarioPedro := Usuario{"Pedro", "698"}
 	usuarioRamon := Usuario{"Ramon", "456"}
@@ -45,16 +59,14 @@ func main() {
 	http.HandleFunc("/usuarios", mostrarUsuarios)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, arg2 *http.Request) {
-		fmt.Fprintf(w, "<h1> PAGINA PRINCIPAL </h1>")
+		fmt.Fprintf(w, "<h1> PAGINA PRINCIPAL GO</h1>")
 	})
+
+	agregarUsuarioTxt(usuarioAndres)
+	agregarUsuarioTxt(usuarioPedro)
+	agregarUsuarioTxt(usuarioRamon)
+	agregarUsuarioTxt(usuarioJulia)
 
 	http.ListenAndServe(":8002", nil)
 
-	b, err := ioutil.ReadFile("matriz.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("%s\n", b)
-	fmt.Printf("%v\n", BloqueIndices["001"])
 }
