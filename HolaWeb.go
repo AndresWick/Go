@@ -24,7 +24,12 @@ func agregarUsuarioTxt(user Usuario) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	b = append(b, []byte("Usuario: {Nombre:"+string(user.Nombre)+",Contraseña:"+string(user.Contraseña)+"}\x0A")...)
+	out, err := json.Marshal(user)
+	if err != nil {
+		panic(err)
+	}
+
+	b = append(b, out...)
 	error := ioutil.WriteFile("Usuarios.json", b, 0644)
 	if error != nil {
 		log.Fatal(error)
